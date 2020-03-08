@@ -9,4 +9,10 @@ html
   body
     div.header
       h1 Clubhouse
+    div
+      if user
+        a(href="/logout") Log Out
+      else 
+        a(href="/signup") Sign Up
+        a(href="/signin") Sign In
     block content

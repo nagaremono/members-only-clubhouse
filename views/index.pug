@@ -5,7 +5,7 @@ block content
   if user
     p Welcome back #{user.username}
 
-    if user.membership === "Member"
+    if user
       a(href="/newmessage") New Message
   
   div.messagebox
@@ -13,6 +13,8 @@ block content
       div.message
         p=message.title
         p=message.text
-        if user && user.membership === "Member"
+        if user && (user.membership === "Member" || user.membership === "Admin")
           p=message.user.username
           p=message.timestamp
+        if user && user.membership === "Admin"
+          a(href=("/deletemessage/" + message._id)) Delete Message
