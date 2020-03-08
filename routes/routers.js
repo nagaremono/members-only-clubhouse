@@ -8,7 +8,12 @@ const User = require("../models/user");
 const Message = require("../models/message");
 
 router.get("/", function(req, res, next) {
-  res.render("index", { user: req.user });
+  Message.find()
+    .populate("user")
+    .exec(function(err, result) {
+      if (err) return next(err);
+      res.render("index", { user: req.user, messages: result });
+    });
 });
 
 router.get("/signup", function(req, res, next) {
@@ -105,6 +110,8 @@ router.post(
       .trim()
       .isLength({ min: 1 })
       .withMessage("Field can't be empty")
+      .custom((value, { req }) => req.user)
+      .withMessage("You are not a club member")
       .escape()
   ],
   function(req, res, next) {
@@ -115,7 +122,7 @@ router.post(
     } else {
       let message = new Message({
         title: req.body.title,
-        text: req.body.title,
+        text: req.body.text,
         user: req.user._id
       });
 

@@ -5,5 +5,14 @@ block content
   if user
     p Welcome back #{user.username}
 
-    a(href="/newmessage") New Message
+    if user.membership === "Member"
+      a(href="/newmessage") New Message
   
+  div.messagebox
+    each message in messages
+      div.message
+        p=message.title
+        p=message.text
+        if user && user.membership === "Member"
+          p=message.user.username
+          p=message.timestamp
