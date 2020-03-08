@@ -60,6 +60,10 @@ router.post(
   }
 );
 
+router.get("/signin", function(req, res, next) {
+  res.render("signin");
+});
+
 function storeUser(req, res, next) {
   bcrypt.hash(req.body.password, 10, function(err, hashed) {
     if (err) return next(err);

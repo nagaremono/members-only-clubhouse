@@ -6,6 +6,7 @@ const logger = require("morgan");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const passport = require("./authenticate");
+const { body } = require("express-validator");
 
 const mongoDB = process.env.DB_URL;
 mongoose.connect(mongoDB, { useUnifiedTopology: true, useNewUrlParser: true });
@@ -31,6 +32,18 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", routers);
+app.post(
+  "/signin",
+  [
+    body("*")
+      .trim()
+      .escape()
+  ],
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/signin"
+  })
+);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
