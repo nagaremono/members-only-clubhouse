@@ -64,6 +64,34 @@ router.get("/signin", function(req, res, next) {
   res.render("signin");
 });
 
+router.get("/join", function(req, res, next) {
+  if (req.user) res.render("join");
+  else res.redirect("/");
+});
+
+router.post(
+  "/join",
+  [
+    check("passcode")
+      .trim()
+      .escape()
+      .custom(value => value === process.env.MB_KEY)
+      .withMessage("Incorrect passcode")
+  ],
+  function(req, res, next) {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      res.render("join", { errors: errors.array() });
+    } else {
+      User.findByIdAndUpdate(req.user._id, { membership: "Member" }, err => {
+        if (err) return next(err);
+        res.redirect("/");
+      });
+    }
+  }
+);
+
 function storeUser(req, res, next) {
   bcrypt.hash(req.body.password, 10, function(err, hashed) {
     if (err) return next(err);
