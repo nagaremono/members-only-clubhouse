@@ -3,4 +3,7 @@ extends layout
 block content
 
   if user
-    p=user.username
+    p Welcome back #{user.username}
+
+    a(href="/newmessage") New Message
+  

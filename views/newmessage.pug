@@ -1,0 +1,16 @@
+extend layout
+
+block content
+  h2 New Message
+  form(action="" method="POST")
+    div(class="form-group row")
+      label(for="title" class="col-sm-2 col-form-label") Title
+      div(class="col-sm-10")
+        input(type="text" class="form-control" id="title" name="title")    
+    div(class="form-group row")
+      label(for="text" class="col-sm-2 col-form-label") Message
+      div(class="col-sm-10")
+        input(type="textarea" class="form-control" id="text" name="text")    
+    div(class="form-group row")
+      div(class="col-sm-10")
+        button(type="submit" class="btn btn-primary") Post Message
