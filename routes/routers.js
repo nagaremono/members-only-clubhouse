@@ -135,15 +135,44 @@ router.post(
   }
 );
 
+router.get("/deletemessage/:id", function(req, res, next) {
+  Message.findById(req.params.id)
+    .populate("user")
+    .exec(function(err, result) {
+      if (err) return next(err);
+
+      res.render("deletemessage", { message: result });
+    });
+});
+
+router.post("/deletemessage/:id", function(req, res, next) {
+  if (req.user.membership === "Admin") {
+    Message.findByIdAndRemove(req.params.id, function(err) {
+      if (err) return next(err);
+      res.redirect("/");
+    });
+  }
+});
+
+router.get("/logout", function(req, res) {
+  req.logOut();
+  res.redirect("/");
+});
+
 function storeUser(req, res, next) {
   bcrypt.hash(req.body.password, 10, function(err, hashed) {
     if (err) return next(err);
+    let membership = "Not Member";
 
+    if (req.body.admin && req.body.admincode === process.env.ADM_KEY) {
+      membership = "Admin";
+    }
     let newUser = new User({
       username: req.body.username,
       firstname: req.body.firstname,
       lastname: req.body.lastname,
-      password: hashed
+      password: hashed,
+      membership: membership
     }).save(err => {
       if (err) return next(err);
       res.redirect("/signin");
